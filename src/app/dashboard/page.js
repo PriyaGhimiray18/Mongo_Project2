@@ -74,16 +74,6 @@ export default function Dashboard() {
             <h2 className="text-dark">Welcome, {session.user.name || 'User'} 👤</h2>
             <p className="lead">Manage your hostel activities from here.</p>
 
-            <div id="userDashboard" className="text-center mb-4">
-              <Image
-                src="/img/user.jpeg"
-                alt="User"
-                width={50}
-                height={50}
-                className="rounded-circle shadow"
-              />
-            </div>
-
             <div className="section">
               <h4>📋 Profile</h4>
               <p>
