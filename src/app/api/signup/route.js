@@ -1,30 +1,27 @@
-// src/app/api/signup/route.js
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-
 
 export async function POST(request) {
   try {
     const { username, email, password, studentId } = await request.json();
 
     // Validate input
-    if (!username || !email || !password || !studentId) {
+    if (!username || !email || !password) {
       return NextResponse.json(
-        { message: 'All fields are required' },
+        { message: 'Username, email, and password are required' },
         { status: 400 }
       );
     }
 
-    // Check if user already exists
+    // Check if user already exists (email or studentId, if provided)
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
           { email },
-          { studentId }
-        ]
-      }
+          ...(studentId ? [{ studentId }] : []),
+        ],
+      },
     });
 
     if (existingUser) {
@@ -43,9 +40,9 @@ export async function POST(request) {
         username,
         email,
         password: hashedPassword,
-        studentId,
-        isAdmin: false // Default to regular user
-      }
+        studentId: studentId || null,
+        isAdmin: false,
+      },
     });
 
     // Remove password from response
