@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export async function POST(request) {
+  console.log('NODE_ENV:', process.env.NODE_ENV);
   try {
     const body = await request.json();
     const { loginInput, studentId, password } = body;
