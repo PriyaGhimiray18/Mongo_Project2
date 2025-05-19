@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
+    "@neondatabase/serverless": "^1.0.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@types/jsonwebtoken": "^9.0.9",
     "bcrypt": "^6.0.0",
