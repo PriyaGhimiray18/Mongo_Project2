@@ -1,10 +1,12 @@
 'use client';
+
+import React, { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import '@/styles/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function AvailableRoomPage() {
+function AvailableRoomContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const hostel = searchParams.get('hostel');
@@ -32,8 +34,10 @@ export default function AvailableRoomPage() {
         return res.json();
       })
       .then((data) => {
-        // 🔥 Show ALL rooms regardless of status
-        setRooms(data.rooms || []);
+        const filteredRooms = (data.rooms || []).filter(
+          (room) => room.status?.toUpperCase() === 'AVAILABLE'
+        );
+        setRooms(filteredRooms);
         setLoading(false);
       })
       .catch((err) => {
@@ -83,7 +87,7 @@ export default function AvailableRoomPage() {
 
   return (
     <div className="container my-5">
-      <h2 className="text-center mb-4">Rooms in {hostel}</h2>
+      <h2 className="text-center mb-4">Available Rooms in {hostel}</h2>
 
       {loading && (
         <div className="text-center">
@@ -127,11 +131,19 @@ export default function AvailableRoomPage() {
         {!loading && !error && rooms.length === 0 && (
           <div className="col-12">
             <div className="alert alert-info text-center">
-              No rooms found in this hostel.
+              No available rooms found in this hostel.
             </div>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+export default function AvailableRoomPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AvailableRoomContent />
+    </Suspense>
   );
 }
