@@ -1,0 +1,49 @@
+{
+  "name": "hostel_booking_system",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "node prisma/seed.mjs",
+    "migrate": "cross-env DATABASE_URL=postgresql://postgres:admin@localhost:5432/Hostel_booking?schema=public prisma migrate dev"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.mjs"
+  },
+  "dependencies": {
+    "@geist-ui/core": "^2.3.8",
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@types/jsonwebtoken": "^9.0.9",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.13.1",
+    "csv-parser": "^3.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.510.0",
+    "next": "^15.3.2",
+    "next-auth": "^4.24.11",
+    "pg": "^8.11.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.22.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "@types/node": "^20.11.24",
+    "autoprefixer": "^10.4.14",
+    "cross-env": "^7.0.3",
+    "css-loader": "^7.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.1.0",
+    "postcss": "^8.4.21",
+    "postcss-import": "^16.1.0",
+    "prisma": "^5.22.0",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.3.3"
+  }
+}

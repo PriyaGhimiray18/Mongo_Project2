@@ -1,0 +1,116 @@
+{
+  "hostels": [
+    {
+      "name": "Hostel E",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "2 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 112, "capacity": 2 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 220, "capacity": 2 }
+      ]
+    },
+    {
+      "name": "Hostel A",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "3 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 113, "capacity": 2 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 214, "capacity": 2 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 314, "capacity": 2 }
+      ]
+    },
+    {
+      "name": "Hostel B",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "3 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 113, "capacity": 2 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 214, "capacity": 2 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 314, "capacity": 2 }
+      ]
+    },
+    {
+      "name": "RKA",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "4 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 112, "capacity": 4 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 212, "capacity": 4 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 312, "capacity": 4 },
+        { "floor": 4, "roomStart": 401, "roomEnd": 412, "capacity": 4 }
+      ]
+    },
+    {
+      "name": "RKB",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "4 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 112, "capacity": 4 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 212, "capacity": 4 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 312, "capacity": 4 },
+        { "floor": 4, "roomStart": 401, "roomEnd": 412, "capacity": 4 }
+      ]
+    },
+    {
+      "name": "NK",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "4 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 108, "capacity": 4 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 209, "capacity": 4 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 309, "capacity": 4 },
+        { "floor": 4, "roomStart": 401, "roomEnd": 408, "capacity": 4 }
+      ]
+    },
+    {
+      "name": "Lhawang",
+      "type": "boys",
+      "description": "Boy's Hostel",
+      "accommodation": "3 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 107, "capacity": 4 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 207, "capacity": 4 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 307, "capacity": 4 }
+      ]
+    },
+    {
+      "name": "Hostel F",
+      "type": "girls",
+      "description": "Girl's Hostel",
+      "accommodation": "3 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 123, "capacity": 3 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 223, "capacity": 3 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 323, "capacity": 3 }
+      ]
+    },
+    {
+      "name": "Hostel C",
+      "type": "girls",
+      "description": "Girl's Hostel",
+      "accommodation": "3 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 113, "capacity": 2 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 214, "capacity": 2 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 314, "capacity": 2 }
+      ]
+    },
+    {
+      "name": "Hostel D",
+      "type": "girls",
+      "description": "Girl's Hostel",
+      "accommodation": "3 floors",
+      "rooms": [
+        { "floor": 1, "roomStart": 101, "roomEnd": 113, "capacity": 2 },
+        { "floor": 2, "roomStart": 201, "roomEnd": 214, "capacity": 2 },
+        { "floor": 3, "roomStart": 301, "roomEnd": 314, "capacity": 2 }
+      ]
+    }
+  ]
+} 
