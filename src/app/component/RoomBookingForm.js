@@ -233,16 +233,16 @@ export default function RoomBookingForm() {
                 required
               >
                 <option value="" disabled>Choose a hostel</option>
-                <option value="Hostel A- 2 people">Hostel A</option>
-                <option value="Hostel B- 2 people">Hostel B</option>
-                <option value="RKA- 4 people">RKA</option>
-                <option value="RKB- 4 people">RKB</option>
-                <option value="NK- 4 people">NK</option>
-                <option value="Lhawang- 4 people">Lhawang</option>
-                <option value="Hostel E- 2 people">Hostel E</option>
-                <option value="Hostel C- 2 people">Hostel C</option>
-                <option value="Hostel D- 2 people">Hostel D</option>
-                <option value="Hostel F- 3 people">Hostel F</option>
+                <option value="Hostel A">Hostel A (2 people)</option>
+                <option value="Hostel B">Hostel B (2 people)</option>
+                <option value="RKA">RKA (4 people)</option>
+                <option value="RKB">RKB (4 people)</option>
+                <option value="NK">NK (4 people)</option>
+                <option value="Lhawang">Lhawang (4 people)</option>
+                <option value="Hostel E">Hostel E (2 people)</option>
+                <option value="Hostel C">Hostel C (2 people)</option>
+                <option value="Hostel D">Hostel D (2 people)</option>
+                <option value="Hostel F">Hostel F (3 people)</option>
               </select>
             </div>
 
