@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import '@/styles/style.css';
 import { Eye, EyeOff } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function Page() {
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,20 +22,33 @@ export default function Page() {
     setLoading(true);
     setError('');
 
-    const emailOrStudentId = e.target.studentId.value;
+    const loginInput = e.target.studentId.value;
     const password = e.target.password.value;
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: emailOrStudentId,
-      password,
-    });
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ loginInput, password }),
+      });
 
-    if (result.error) {
-      setError(result.error || 'Login failed');
-      setLoading(false);
-    } else {
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || 'Login failed');
+        setLoading(false);
+        return;
+      }
+
+      // Login successful → redirect
       router.push('/dashboard');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 
