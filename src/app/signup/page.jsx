@@ -18,10 +18,11 @@ export default function SignupPage() {
     setError('');
 
     const form = e.target;
-    const username = form.username.value;
-    const email = form.email.value;
+    const username = form.username.value.trim();
+    const email = form.email.value.trim();
     const password = form.password.value;
-    const studentId = form.studentId.value;
+    const studentId = form.studentId.value.trim();
+
 
     if (!username || !password || !studentId || !email) {
       setError('Please fill in all fields');
