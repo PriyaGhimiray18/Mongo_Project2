@@ -17,22 +17,22 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          console.log("Missing credentials");
-          throw new Error("Please enter both email and password");
-        }
-
-        console.log("Attempting login for:", credentials.email);
-
         try {
-          const user = await prisma.user.findFirst({
+          if (!credentials?.email || !credentials?.password) {
+            console.log("Missing credentials");
+            throw new Error("Please enter both email and password");
+          }
+
+          console.log("Attempting login for:", credentials.email);
+
+          // First try to find user by email
+          let user = await prisma.user.findFirst({
             where: {
               OR: [
                 { email: credentials.email },
-                { studentId: credentials.email },
-                { username: credentials.email },
-              ],
-            },
+                { studentId: credentials.email }
+              ]
+            }
           });
 
           if (!user) {
@@ -40,12 +40,16 @@ export const authOptions = {
             throw new Error("Invalid email or password");
           }
 
+          console.log("User found:", { id: user.id, email: user.email, studentId: user.studentId });
+
           if (!user.password) {
             console.log("User has no password:", credentials.email);
             throw new Error("Invalid user configuration");
           }
 
           const isValid = await bcrypt.compare(credentials.password, user.password);
+          console.log("Password validation result:", isValid);
+
           if (!isValid) {
             console.log("Invalid password for:", credentials.email);
             throw new Error("Invalid email or password");
@@ -115,7 +119,7 @@ export const authOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Enable debug mode
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);
