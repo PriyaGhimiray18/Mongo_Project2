@@ -15,6 +15,9 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         try {
+          console.log("Auth attempt - Environment:", process.env.NODE_ENV);
+          console.log("Auth attempt - NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
+          
           if (!credentials?.email || !credentials?.password) {
             console.log("Missing credentials");
             throw new Error("Please enter both email and password");
@@ -37,7 +40,12 @@ const handler = NextAuth({
             throw new Error("Invalid email or password");
           }
 
-          console.log("User found:", { id: user.id, email: user.email, studentId: user.studentId });
+          console.log("User found:", { 
+            id: user.id, 
+            email: user.email, 
+            studentId: user.studentId,
+            hasPassword: !!user.password 
+          });
 
           if (!user.password) {
             console.log("User has no password:", credentials.email);
@@ -70,6 +78,7 @@ const handler = NextAuth({
 
   pages: {
     signIn: '/',
+    error: '/',
   },
 
   session: {
@@ -103,7 +112,7 @@ const handler = NextAuth({
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
+  debug: true,
 });
 
 export { handler as GET, handler as POST };
