@@ -27,8 +27,14 @@ export default function Page() {
     setLoading(true);
     setError('');
 
-    const email = e.target.email.value;
+    const email = e.target.email.value.trim();
     const password = e.target.password.value;
+
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      setLoading(false);
+      return;
+    }
 
     try {
       const result = await signIn('credentials', {
@@ -39,19 +45,26 @@ export default function Page() {
 
       if (result?.error) {
         setError(result.error);
+        console.error('Login error:', result.error);
       } else if (result?.ok) {
         router.push('/dashboard');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('An error occurred during login');
+      setError('An error occurred during login. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   if (status === 'loading') {
-    return <div className="text-center mt-5">Loading...</div>;
+    return (
+      <div className="page-wrapper">
+        <div className="login-container">
+          <div className="text-center">Loading...</div>
+        </div>
+      </div>
+    );
   }
 
   if (status === 'authenticated') {
@@ -71,6 +84,7 @@ export default function Page() {
               placeholder="Email or Student ID"
               required
               disabled={loading}
+              autoComplete="email"
             />
 
             <div className="password-container">
@@ -80,6 +94,7 @@ export default function Page() {
                 placeholder="Password"
                 required
                 disabled={loading}
+                autoComplete="current-password"
               />
               <div
                 className="eye-icon"
@@ -97,7 +112,7 @@ export default function Page() {
             </div>
 
             {error && (
-              <div style={{ color: '#ff0000', marginTop: '10px', fontSize: '14px' }}>
+              <div className="error-message">
                 {error}
               </div>
             )}
@@ -124,7 +139,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Centering and layout styles just like signup page */}
       <style jsx>{`
         .page-wrapper {
           display: flex;
@@ -162,6 +176,13 @@ export default function Page() {
           top: 50%;
           transform: translateY(-50%);
           cursor: pointer;
+        }
+
+        .error-message {
+          color: #dc3545;
+          margin-top: 10px;
+          font-size: 14px;
+          text-align: left;
         }
 
         button:disabled {

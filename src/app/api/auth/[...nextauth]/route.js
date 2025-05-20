@@ -17,11 +17,14 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials?.password) {
-            throw new Error("Email and password required");
-          }
+        if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials");
+          throw new Error("Please enter both email and password");
+        }
 
+        console.log("Attempting login for:", credentials.email);
+
+        try {
           const user = await prisma.user.findFirst({
             where: {
               OR: [
@@ -33,18 +36,22 @@ export const authOptions = {
           });
 
           if (!user) {
-            throw new Error("No user found");
+            console.log("No user found for:", credentials.email);
+            throw new Error("Invalid email or password");
           }
 
           if (!user.password) {
+            console.log("User has no password:", credentials.email);
             throw new Error("Invalid user configuration");
           }
 
           const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
-            throw new Error("Invalid password");
+            console.log("Invalid password for:", credentials.email);
+            throw new Error("Invalid email or password");
           }
 
+          console.log("Login successful for:", credentials.email);
           return {
             id: user.id,
             email: user.email,
@@ -54,7 +61,7 @@ export const authOptions = {
           };
         } catch (error) {
           console.error("Auth error:", error);
-          return null;
+          throw error;
         }
       },
     }),
