@@ -7,21 +7,39 @@ async function main() {
 
   // ... (keep your existing hostel and room code as-is)
 
-  // ✅ Add Admin User
-  console.log('Creating admin user...');
-
-  const hashedPassword = await bcrypt.hash('Chimidem@sso', 10); // change password if needed
+  // Create test user with student ID
+  console.log('Creating test user...');
+  const hashedPassword = await bcrypt.hash('test123', 10);
 
   await prisma.user.upsert({
-  where: { email: "chimidem.cst@rub.edu.bt" },
-  update: {},  // no changes on update
-  create: {
-    username: "Chimi Dem",  // required
-    email: "chimidem.cst@rub.edu.bt",
-    password: hashedPassword, // your bcrypt hashed pass
-    isAdmin: true,  // mark as admin
-  }
-});
+    where: { email: "test@example.com" },
+    update: {},
+    create: {
+      username: "Test User",
+      email: "test@example.com",
+      studentId: "2024001",
+      password: hashedPassword,
+      isAdmin: false,
+    }
+  });
+
+  console.log('✅ Test user seeded.');
+
+  // Create admin user
+  console.log('Creating admin user...');
+  const adminPassword = await bcrypt.hash('admin123', 10);
+
+  await prisma.user.upsert({
+    where: { email: "admin@example.com" },
+    update: {},
+    create: {
+      username: "Admin User",
+      email: "admin@example.com",
+      studentId: "2024002",
+      password: adminPassword,
+      isAdmin: true,
+    }
+  });
 
   console.log('✅ Admin user seeded.');
 
