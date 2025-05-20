@@ -9,16 +9,20 @@ async function main() {
 
   // Create test user with student ID
   console.log('Creating test user...');
-  const hashedPassword = await bcrypt.hash('test123', 10);
+  const testPassword = await bcrypt.hash('test123', 10);
 
   await prisma.user.upsert({
     where: { email: "test@example.com" },
-    update: {},
+    update: {
+      password: testPassword,
+      studentId: "2024001",
+      isAdmin: false
+    },
     create: {
       username: "Test User",
       email: "test@example.com",
       studentId: "2024001",
-      password: hashedPassword,
+      password: testPassword,
       isAdmin: false,
     }
   });
@@ -31,7 +35,11 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: "admin@example.com" },
-    update: {},
+    update: {
+      password: adminPassword,
+      studentId: "2024002",
+      isAdmin: true
+    },
     create: {
       username: "Admin User",
       email: "admin@example.com",
