@@ -11,37 +11,29 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        loginInput: { label: "Email / Student ID / Username", type: "text" },
+        email: { label: "Email or Student ID", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const loginId = credentials?.loginInput;
-        const password = credentials?.password;
+        if (!credentials?.email || !credentials?.password) return null;
 
-        if (!loginId || !password) return null;
-
-        // Find user by email, studentId or username
+        // Find user by email OR studentId OR username
         const user = await prisma.user.findFirst({
           where: {
             OR: [
-              { email: loginId },
-              { studentId: loginId },
-              { username: loginId },
+              { email: credentials.email },
+              { studentId: credentials.email },
+              { username: credentials.email },
             ],
           },
         });
 
         if (!user || !user.password) return null;
 
-        const isValid = await bcrypt.compare(password, user.password);
+        const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) return null;
 
-        // Optional dev log
-        if (process.env.NODE_ENV !== "production") {
-          console.log("✅ User logged in:", user);
-        }
-
-        // Return user info (without password)
+        // Return user data without password
         return {
           id: user.id,
           email: user.email,
@@ -72,14 +64,14 @@ export const authOptions = {
 
     async session({ session, token }) {
       if (token) {
-        session.user = {
-          id: token.id,
-          email: token.email,
-          isAdmin: token.isAdmin,
-          studentId: token.studentId,
-          username: token.username,
-          name: token.username || token.studentId || "n/a", // For UI display
-        };
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.isAdmin = token.isAdmin;
+        session.user.studentId = token.studentId;
+        session.user.username = token.username;
+
+        // Set session.user.name for UI display
+        session.user.name = token.username || token.studentId || "n/a";
       }
       return session;
     },
@@ -101,4 +93,5 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
+export { authOptions }; // <--- Add this line
 export { handler as GET, handler as POST };
