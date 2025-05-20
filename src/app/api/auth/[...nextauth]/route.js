@@ -11,29 +11,37 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email or Student ID", type: "text" },
+        loginInput: { label: "Email / Student ID / Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        const loginId = credentials?.loginInput;
+        const password = credentials?.password;
 
-        // Find user by email OR studentId OR username
+        if (!loginId || !password) return null;
+
+        // Find user by email, studentId or username
         const user = await prisma.user.findFirst({
           where: {
             OR: [
-              { email: credentials.email },
-              { studentId: credentials.email },
-              { username: credentials.email },
+              { email: loginId },
+              { studentId: loginId },
+              { username: loginId },
             ],
           },
         });
 
         if (!user || !user.password) return null;
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return null;
 
-        // Return user data without password
+        // Optional dev log
+        if (process.env.NODE_ENV !== "production") {
+          console.log("✅ User logged in:", user);
+        }
+
+        // Return user info (without password)
         return {
           id: user.id,
           email: user.email,
@@ -64,14 +72,14 @@ export const authOptions = {
 
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.email = token.email;
-        session.user.isAdmin = token.isAdmin;
-        session.user.studentId = token.studentId;
-        session.user.username = token.username;
-
-        // Set session.user.name for UI display
-        session.user.name = token.username || token.studentId || "n/a";
+        session.user = {
+          id: token.id,
+          email: token.email,
+          isAdmin: token.isAdmin,
+          studentId: token.studentId,
+          username: token.username,
+          name: token.username || token.studentId || "n/a", // For UI display
+        };
       }
       return session;
     },
