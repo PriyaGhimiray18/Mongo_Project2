@@ -16,16 +16,12 @@ export const authOptions = {
         email: { label: "Email or Student ID", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        console.log("Auth attempt:", { email: credentials?.email });
-        
+      async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
-            console.log("Missing credentials");
-            return null;
+            throw new Error("Email and password required");
           }
 
-          // Find user by email OR studentId OR username
           const user = await prisma.user.findFirst({
             where: {
               OR: [
@@ -37,23 +33,18 @@ export const authOptions = {
           });
 
           if (!user) {
-            console.log("No user found");
-            return null;
+            throw new Error("No user found");
           }
 
           if (!user.password) {
-            console.log("User has no password");
-            return null;
+            throw new Error("Invalid user configuration");
           }
 
           const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
-            console.log("Invalid password");
-            return null;
+            throw new Error("Invalid password");
           }
 
-          console.log("Authentication successful for:", user.email);
-          // Return user data without password
           return {
             id: user.id,
             email: user.email,
@@ -70,8 +61,8 @@ export const authOptions = {
   ],
 
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: '/',
+    error: '/',
   },
 
   session: {
@@ -98,8 +89,6 @@ export const authOptions = {
         session.user.isAdmin = token.isAdmin;
         session.user.studentId = token.studentId;
         session.user.username = token.username;
-
-        // Set session.user.name for UI display
         session.user.name = token.username || token.studentId || "n/a";
       }
       return session;

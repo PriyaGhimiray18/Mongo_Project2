@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import '@/styles/style.css';
 import { Eye, EyeOff } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,10 +13,14 @@ export default function Page() {
   const [error, setError] = useState('');
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    if (status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [status, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,13 +35,12 @@ export default function Page() {
         redirect: false,
         email,
         password,
-        callbackUrl: '/dashboard'
       });
 
       if (result?.error) {
         setError(result.error);
-      } else if (result?.url) {
-        router.push(result.url);
+      } else if (result?.ok) {
+        router.push('/dashboard');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -46,6 +49,14 @@ export default function Page() {
       setLoading(false);
     }
   };
+
+  if (status === 'loading') {
+    return <div className="text-center mt-5">Loading...</div>;
+  }
+
+  if (status === 'authenticated') {
+    return null;
+  }
 
   return (
     <div className="page-wrapper">
