@@ -9,66 +9,57 @@ export const authOptions = {
 
   providers: [
     CredentialsProvider({
-      id: "credentials",
       name: "Credentials",
-      type: "credentials",
       credentials: {
-        email: { label: "Email or Student ID", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
         try {
+          console.log('Login attempt for:', credentials.email);
+          
           if (!credentials?.email || !credentials?.password) {
-            console.log("Missing credentials");
-            throw new Error("Please enter both email and password");
+            console.log('Missing credentials');
+            return null;
           }
 
-          console.log("Attempting login for:", credentials.email);
-
-          // First try to find user by email
-          let user = await prisma.user.findFirst({
-            where: {
-              OR: [
-                { email: credentials.email },
-                { studentId: credentials.email }
-              ]
-            }
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email }
           });
 
+          console.log('User found:', user ? 'Yes' : 'No');
+
           if (!user) {
-            console.log("No user found for:", credentials.email);
-            throw new Error("Invalid email or password");
+            console.log('No user found with email:', credentials.email);
+            return null;
           }
 
-          console.log("User found:", { id: user.id, email: user.email, studentId: user.studentId });
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
 
-          if (!user.password) {
-            console.log("User has no password:", credentials.email);
-            throw new Error("Invalid user configuration");
+          console.log('Password valid:', isPasswordValid);
+
+          if (!isPasswordValid) {
+            console.log('Invalid password for user:', credentials.email);
+            return null;
           }
 
-          const isValid = await bcrypt.compare(credentials.password, user.password);
-          console.log("Password validation result:", isValid);
-
-          if (!isValid) {
-            console.log("Invalid password for:", credentials.email);
-            throw new Error("Invalid email or password");
-          }
-
-          console.log("Login successful for:", credentials.email);
+          console.log('Login successful for:', credentials.email);
           return {
             id: user.id,
             email: user.email,
-            studentId: user.studentId,
-            username: user.username,
+            name: user.username,
             isAdmin: user.isAdmin,
+            studentId: user.studentId
           };
         } catch (error) {
-          console.error("Auth error:", error);
-          throw error;
+          console.error('Auth error:', error);
+          return null;
         }
-      },
-    }),
+      }
+    })
   ],
 
   pages: {
@@ -78,17 +69,15 @@ export const authOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 1 day
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email;
         token.isAdmin = user.isAdmin;
         token.studentId = user.studentId;
-        token.username = user.username;
       }
       return token;
     },
@@ -96,11 +85,8 @@ export const authOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
-        session.user.email = token.email;
         session.user.isAdmin = token.isAdmin;
         session.user.studentId = token.studentId;
-        session.user.username = token.username;
-        session.user.name = token.username || token.studentId || "n/a";
       }
       return session;
     },
@@ -119,7 +105,7 @@ export const authOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
+  debug: true,
 };
 
 const handler = NextAuth(authOptions);

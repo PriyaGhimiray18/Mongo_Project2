@@ -1,200 +1,135 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import '@/styles/style.css';
 import { Eye, EyeOff } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function Page() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+export default function Home() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isClient, setIsClient] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    setIsClient(true);
-    if (status === 'authenticated') {
-      router.push('/dashboard');
-    }
-  }, [status, router]);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    const email = e.target.email.value.trim();
-    const password = e.target.password.value;
-
-    if (!email || !password) {
-      setError('Please enter both email and password');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (result?.error) {
-        setError(result.error);
-        console.error('Login error:', result.error);
-      } else if (result?.ok) {
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('An error occurred during login. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (status === 'loading') {
     return (
-      <div className="page-wrapper">
-        <div className="login-container">
-          <div className="text-center">Loading...</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
   if (status === 'authenticated') {
+    router.push('/dashboard');
     return null;
   }
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      console.log('Attempting login with:', { email });
+      
+      if (!email || !password) {
+        setError('Please enter both email and password');
+        return;
+      }
+
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      console.log('Sign in result:', result);
+
+      if (result?.error) {
+        setError('Invalid email or password');
+        return;
+      }
+
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('An error occurred during login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="page-wrapper">
-      <div className="login-container">
-        <div className="login-form">
-          <h2>Login</h2>
-          <p>Please enter your details</p>
-          <form onSubmit={handleLogin}>
-            <input
-              type="text"
-              name="email"
-              placeholder="Email or Student ID"
-              required
-              disabled={loading}
-              autoComplete="email"
-            />
-
-            <div className="password-container">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                placeholder="Password"
-                required
-                disabled={loading}
-                autoComplete="current-password"
-              />
-              <div
-                className="eye-icon"
-                role="button"
-                tabIndex={0}
-                onClick={() => !loading && setShowPassword(!showPassword)}
-                onKeyDown={(e) => {
-                  if ((e.key === 'Enter' || e.key === ' ') && !loading) {
-                    setShowPassword(!showPassword);
-                  }
-                }}
-              >
-                {isClient && (showPassword ? <EyeOff size={20} /> : <Eye size={20} />)}
-              </div>
-            </div>
-
-            {error && (
-              <div className="error-message">
-                {error}
-              </div>
-            )}
-
-            <button type="submit" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
-            </button>
-
-            <div className="signup-text">
-              <p>
-                Don&apos;t have an account?{' '}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (!loading) router.push('/signup');
-                  }}
-                >
-                  Sign Up
-                </a>
-              </p>
-            </div>
-          </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Hostel Room Booking System
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Sign in to your account
+          </p>
         </div>
+        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {error && (
+            <div className="text-red-500 text-sm text-center">{error}</div>
+          )}
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                </span>
+              ) : (
+                'Sign in'
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-
-      <style jsx>{`
-        .page-wrapper {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background: #f0f2f5;
-          padding: 20px;
-        }
-
-        .login-container {
-          background: rgba(255, 255, 255, 0.95);
-          padding: 40px;
-          border-radius: 20px;
-          box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
-          width: 100%;
-          max-width: 400px;
-          text-align: center;
-          transition: all 0.3s ease-in-out;
-          z-index: 1;
-        }
-
-        .password-container {
-          position: relative;
-        }
-
-        .password-container input {
-          width: 100%;
-          padding-right: 2.5rem;
-        }
-
-        .eye-icon {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          cursor: pointer;
-        }
-
-        .error-message {
-          color: #dc3545;
-          margin-top: 10px;
-          font-size: 14px;
-          text-align: left;
-        }
-
-        button:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-        }
-
-        input:disabled {
-          background-color: #f5f5f5;
-          cursor: not-allowed;
-        }
-      `}</style>
     </div>
   );
 }
