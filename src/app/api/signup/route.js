@@ -4,13 +4,17 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
-
 export async function POST(request) {
   try {
-    const { username, email, password, studentId } = await request.json();
+    console.log('Signup attempt started');
+    const body = await request.json();
+    console.log('Request body:', { ...body, password: '[REDACTED]' });
+
+    const { username, email, password, studentId } = body;
 
     // Validate input
     if (!username || !email || !password || !studentId) {
+      console.log('Missing fields:', { username: !!username, email: !!email, password: !!password, studentId: !!studentId });
       return NextResponse.json(
         { message: 'All fields are required' },
         { status: 400 }
@@ -18,6 +22,7 @@ export async function POST(request) {
     }
 
     // Check if user already exists
+    console.log('Checking for existing user with:', { email, studentId });
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
@@ -28,6 +33,11 @@ export async function POST(request) {
     });
 
     if (existingUser) {
+      console.log('User already exists:', { 
+        id: existingUser.id, 
+        email: existingUser.email, 
+        studentId: existingUser.studentId 
+      });
       return NextResponse.json(
         { message: 'User with this email or student ID already exists' },
         { status: 400 }
@@ -35,17 +45,25 @@ export async function POST(request) {
     }
 
     // Hash password
+    console.log('Hashing password');
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
+    console.log('Creating new user');
     const user = await prisma.user.create({
       data: {
         username,
         email,
         password: hashedPassword,
         studentId,
-        isAdmin: false // Default to regular user
+        isAdmin: false
       }
+    });
+
+    console.log('User created successfully:', { 
+      id: user.id, 
+      email: user.email, 
+      studentId: user.studentId 
     });
 
     // Remove password from response
