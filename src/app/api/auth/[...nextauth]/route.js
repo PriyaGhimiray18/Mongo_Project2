@@ -9,38 +9,62 @@ export const authOptions = {
 
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Credentials",
+      type: "credentials",
       credentials: {
         email: { label: "Email or Student ID", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+      async authorize(credentials, req) {
+        console.log("Auth attempt:", { email: credentials?.email });
+        
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.log("Missing credentials");
+            return null;
+          }
 
-        // Find user by email OR studentId OR username
-        const user = await prisma.user.findFirst({
-          where: {
-            OR: [
-              { email: credentials.email },
-              { studentId: credentials.email },
-              { username: credentials.email },
-            ],
-          },
-        });
+          // Find user by email OR studentId OR username
+          const user = await prisma.user.findFirst({
+            where: {
+              OR: [
+                { email: credentials.email },
+                { studentId: credentials.email },
+                { username: credentials.email },
+              ],
+            },
+          });
 
-        if (!user || !user.password) return null;
+          if (!user) {
+            console.log("No user found");
+            return null;
+          }
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) return null;
+          if (!user.password) {
+            console.log("User has no password");
+            return null;
+          }
 
-        // Return user data without password
-        return {
-          id: user.id,
-          email: user.email,
-          studentId: user.studentId,
-          username: user.username,
-          isAdmin: user.isAdmin,
-        };
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          if (!isValid) {
+            console.log("Invalid password");
+            return null;
+          }
+
+          console.log("Authentication successful for:", user.email);
+          // Return user data without password
+          return {
+            id: user.id,
+            email: user.email,
+            studentId: user.studentId,
+            username: user.username,
+            isAdmin: user.isAdmin,
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       },
     }),
   ],
@@ -95,7 +119,7 @@ export const authOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
+  debug: true, // Enable debug mode
 };
 
 const handler = NextAuth(authOptions);

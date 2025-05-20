@@ -23,20 +23,27 @@ export default function Page() {
     setLoading(true);
     setError('');
 
-    const emailOrStudentId = e.target.studentId.value;
+    const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: emailOrStudentId,
-      password,
-    });
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+        callbackUrl: '/dashboard'
+      });
 
-    if (result.error) {
-      setError(result.error || 'Login failed');
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.url) {
+        router.push(result.url);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('An error occurred during login');
+    } finally {
       setLoading(false);
-    } else {
-      router.push('/dashboard');
     }
   };
 
@@ -49,7 +56,7 @@ export default function Page() {
           <form onSubmit={handleLogin}>
             <input
               type="text"
-              name="studentId"
+              name="email"
               placeholder="Email or Student ID"
               required
               disabled={loading}

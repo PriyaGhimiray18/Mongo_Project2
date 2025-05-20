@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import Navbar from '@/app/component/Navbar';
 import Footer from '@/app/component/footer';
 import '@/styles/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
