@@ -9,6 +9,12 @@ const nextConfig = {
   },
   // Disable font optimization temporarily
   optimizeFonts: false,
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 }
 
 module.exports = nextConfig 
