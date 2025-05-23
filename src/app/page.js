@@ -36,11 +36,11 @@ export default function Page() {
     }
 
     try {
-      const result = await signIn('credentials', {
-        redirect: false,
+    const result = await signIn('credentials', {
+      redirect: false,
         email,
-        password,
-      });
+      password,
+    });
 
       if (result?.error) {
         setError(result.error);
@@ -68,7 +68,7 @@ export default function Page() {
 
   if (status === 'authenticated') {
     return null;
-  }
+    }
 
   return (
     <div className="page-wrapper">
