@@ -9,13 +9,13 @@ async function main() {
 
   // Create test user with student ID
   console.log('Creating test user...');
-  const testPassword = await bcrypt.hash('test123', 10);
+  const testPassword = await bcrypt.hash('cst1234', 10);
 
   await prisma.user.upsert({
-    where: { email: "test@example.com" },
+    where: { email: "02230143.cst@rub.edu.bt" },
     update: {
       password: testPassword,
-      studentId: "2024001",
+      studentId: "02230143",
       isAdmin: false
     },
     create: {
@@ -50,6 +50,23 @@ async function main() {
   });
 
   console.log('✅ Admin user seeded.');
+
+  // Seed Hostel A
+  const hostelA = await prisma.hostel.upsert({
+    where: { name: 'Hostel A' },
+    update: {},
+    create: {
+      name: 'Hostel A',
+      type: 'BOYS',
+      location: 'CST Campus',
+      price_per_night: 100,
+      available_rooms: 10,
+      amenities: ['wifi', 'parking', 'ac'],
+      image_url: '/img/hostelA.jpg',
+    },
+  });
+
+  console.log('Hostel A seeded:', hostelA);
 
   // ✅ Logging counts
   const hostelCount = await prisma.hostel.count();
