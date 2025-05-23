@@ -1,15 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Footer from '../component/footer'; 
-import prisma from '@/lib/prisma';
 import RoomCard from '../component/RoomCard';
 import '@/styles/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Home() {
   const [newHostels, setNewHostels] = useState([]);
-  const [loading, setLoading] = useState(true); // Optional: show loading
-  const [error, setError] = useState(null);     // Optional: track error
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const hardcodedHostelNames = [
     'Hostel A',
