@@ -34,8 +34,9 @@ function AvailableRoomContent() {
         return res.json();
       })
       .then((data) => {
+        // Show all rooms except those under maintenance
         const filteredRooms = (data.rooms || []).filter(
-          (room) => room.status?.toUpperCase() === 'AVAILABLE'
+          (room) => room.status?.toUpperCase() !== 'MAINTENANCE'
         );
         setRooms(filteredRooms);
         setLoading(false);
@@ -131,7 +132,7 @@ function AvailableRoomContent() {
         {!loading && !error && rooms.length === 0 && (
           <div className="col-12">
             <div className="alert alert-info text-center">
-              No available rooms found in this hostel.
+              No rooms found in this hostel.
             </div>
           </div>
         )}

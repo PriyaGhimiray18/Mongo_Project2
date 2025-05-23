@@ -1,4 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+const hostelsData = require('../public/data/hostels.json');
+
 const prisma = new PrismaClient();
 
 // Helper to create rooms for a hostel
@@ -46,85 +49,73 @@ async function createRoomsForHostel(hostel, floorRooms, numFloors, capacity) {
 async function main() {
   console.log('Starting database seeding...');
 
-  // Hostels data
-  const hostels = [
-    { name: 'Hostel E', type: 'girls', description: 'Girls hostel with modern amenities', accommodation: '2 floors' },
-    { name: 'Hostel A', type: 'boys', description: 'Boys hostel with modern amenities', accommodation: '3 floors' },
-    { name: 'Hostel B', type: 'boys', description: 'Boys hostel with modern amenities', accommodation: '3 floors' },
-    { name: 'RKA', type: 'girls', description: 'Girls hostel with 4 people per room', accommodation: '4 floors' },
-    { name: 'RKB', type: 'girls', description: 'Girls hostel with 4 people per room', accommodation: '4 floors' },
-    { name: 'NK', type: 'girls', description: 'Girls hostel with 2 people per room', accommodation: '4 floors' },
-    { name: 'Lhawang', type: 'boys', description: 'Boys hostel with 2 people per room', accommodation: '3 floors' },
-  ];
-
-  console.log('Creating hostels...');
-  
-  for (const hostelData of hostels) {
-    console.log(`Processing hostel: ${hostelData.name}`);
-
-    try {
-      // Upsert hostel record (create or update)
-      const hostel = await prisma.hostel.upsert({
-        where: { name: hostelData.name },
-        update: hostelData,
-        create: hostelData,
-      });
-
-      console.log(`Created/Updated hostel: ${hostel.name} with ID: ${hostel.id}`);
-
-      // Decide rooms per floor, floors count and capacity
-      let floorRooms;
-      let numFloors;
-      let capacity;
-
-      switch (hostel.name) {
-        case 'Hostel E':
-          floorRooms = [12, 20]; 
-          numFloors = 2;
-          capacity = 2;
-          break;
-        case 'Hostel A':
-        case 'Hostel B':
-          floorRooms = [13, 14, 14]; 
-          numFloors = 3;
-          capacity = 2;
-          break;
-        case 'RKA':
-        case 'RKB':
-          floorRooms = [12, 12, 12, 12]; 
-          numFloors = 4;
-          capacity = 4;
-          break;
-        case 'NK':
-          floorRooms = [8, 9, 9, 8]; 
-          numFloors = 4;
-          capacity = 2;
-          break;
-        case 'Lhawang':
-          floorRooms = [7, 7, 7]; 
-          numFloors = 3;
-          capacity = 2;
-          break;
-        default:
-          floorRooms = [13, 14, 14]; 
-          numFloors = 3;
-          capacity = 2;
+  // Create hostels from JSON data
+  for (const hostelData of hostelsData.hostels) {
+    const hostel = await prisma.hostel.upsert({
+      where: { name: hostelData.name },
+      update: {
+        name: hostelData.name,
+        type: hostelData.type,
+        description: hostelData.description,
+        accommodation: hostelData.accommodation,
+      },
+      create: {
+        name: hostelData.name,
+        type: hostelData.type,
+        description: hostelData.description,
+        accommodation: hostelData.accommodation,
       }
+    });
+    console.log(`✅ Hostel upserted: ${hostel.name}`);
 
-      // Create rooms for the current hostel
-      await createRoomsForHostel(hostel, floorRooms, numFloors, capacity);
-
-    } catch (hostelError) {
-      console.error(`Error processing hostel ${hostelData.name}:`, hostelError);
-      throw hostelError;
+    // Create rooms for each hostel
+    for (const roomData of hostelData.rooms) {
+      await prisma.room.upsert({
+        where: {
+          room_number_hostelId: {
+            room_number: roomData.room_number,
+            hostelId: hostel.id
+          }
+        },
+        update: {
+          floor: roomData.floor,
+          capacity: roomData.capacity,
+          status: roomData.status.toUpperCase(),
+          occupants: roomData.occupants,
+        },
+        create: {
+          hostelId: hostel.id,
+          room_number: roomData.room_number,
+          floor: roomData.floor,
+          capacity: roomData.capacity,
+          status: roomData.status.toUpperCase(),
+          occupants: roomData.occupants,
+        }
+      });
     }
+    console.log(`✅ Rooms upserted for hostel: ${hostel.name}`);
   }
 
-  // Final count check
+  // ✅ Add Admin User
+  console.log('Creating admin user...');
+  const hashedPassword = await bcrypt.hash('Chimidem@sso', 10);
+  await prisma.user.upsert({
+    where: { email: "chimidem.cst@rub.edu.bt" },
+    update: {},
+    create: {
+      username: "Chimi Dem",
+      email: "chimidem.cst@rub.edu.bt",
+      password: hashedPassword,
+      isAdmin: true,
+    }
+  });
+  console.log('✅ Admin user seeded.');
+
+  // ✅ Logging counts
   const hostelCount = await prisma.hostel.count();
   const roomCount = await prisma.room.count();
-
-  console.log(`Seeding completed. Created ${hostelCount} hostels and ${roomCount} rooms.`);
+  const userCount = await prisma.user.count();
+  console.log(`Seeding completed. Created ${hostelCount} hostels, ${roomCount} rooms, and ${userCount} users.`);
 }
 
 main()

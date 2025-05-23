@@ -1,4 +1,6 @@
 // layout.js
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import { Inter } from 'next/font/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
@@ -25,11 +27,11 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className={inter.className}>
+      <body className={inter.className}><StackProvider app={stackServerApp}><StackTheme>
         <BootstrapClient />
         <NavbarWrapper /> {/* ✅ Conditional rendering is handled here */}
         <SessionWrapper>{children}</SessionWrapper>
-      </body>
+      </StackTheme></StackProvider></body>
     </html>
   );
 }

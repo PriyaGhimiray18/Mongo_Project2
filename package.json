@@ -12,12 +12,13 @@
     "migrate": "cross-env DATABASE_URL=postgresql://postgres:admin@localhost:5432/Hostel_booking?schema=public prisma migrate dev"
   },
   "prisma": {
-    "seed": "node prisma/seed.mjs"
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
     "@neondatabase/serverless": "^1.0.0",
     "@next-auth/prisma-adapter": "^1.0.7",
+    "@stackframe/stack": "^2.8.12",
     "@types/jsonwebtoken": "^9.0.9",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
