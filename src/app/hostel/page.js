@@ -66,21 +66,21 @@ export default function Home() {
         {/* Boy's Hostels */}
         <h3 className="text-dark mb-4">Boy's Hostels</h3>
         <div className="row">
-          <RoomCard hostel="Hostel A" image="/img/hostelA.jpg" description="Boy's Hostel" accommodation="Two people per room" link="/available-room?hostel=HostelA" />
-          <RoomCard hostel="Hostel B" image="/img/hb.jpg" description="Boy's Hostel" accommodation="Two people per room" link="/available-room?hostel=HostelB" />
-          <RoomCard hostel="Hostel RKA" image="/img/RKA.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=HostelRKA" />
-          <RoomCard hostel="Hostel RKB" image="/img/RKB.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=HostelRKB" />
-          <RoomCard hostel="Hostel NK" image="/img/nk.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=HostelNK" />
-          <RoomCard hostel="Hostel E" image="/img/he.jpg" description="Boy's Hostel" accommodation="Two people per room" link="/available-room?hostel=HostelE" />
-          <RoomCard hostel="Hostel Lhawang" image="/img/lhawang.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=HostelLhawang" />
+          <RoomCard hostel="Hostel A" image="/img/hostelA.jpg" description="Boy's Hostel" accommodation="Two people per room" link="/available-room?hostel=Hostel A" />
+          <RoomCard hostel="Hostel B" image="/img/hb.jpg" description="Boy's Hostel" accommodation="Two people per room" link="/available-room?hostel=Hostel B" />
+          <RoomCard hostel="Hostel RKA" image="/img/RKA.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=Hostel RKA" />
+          <RoomCard hostel="Hostel RKB" image="/img/RKB.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=Hostel RKB" />
+          <RoomCard hostel="Hostel NK" image="/img/nk.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=Hostel NK" />
+          <RoomCard hostel="Hostel E" image="/img/he.jpg" description="Boy's Hostel" accommodation="Two people per room" link="/available-room?hostel=Hostel E" />
+          <RoomCard hostel="Hostel Lhawang" image="/img/lhawang.jpg" description="Boy's Hostel" accommodation="Four people per room" link="/available-room?hostel=Hostel Lhawang" />
         </div>
 
         {/* Girl's Hostels */}
         <h3 className="text-dark mt-5 mb-4">Girl's Hostels</h3>
         <div className="row">
-          <RoomCard hostel="Hostel F" image="/img/hf.jpg" description="Girl's Hostel" accommodation="Three people per room" link="/available-room?hostel=HostelF" />
-          <RoomCard hostel="Hostel C" image="/img/hc.jpg" description="Girl's Hostel" accommodation="Two people in a room" link="/available-room?hostel=HostelC" />
-          <RoomCard hostel="Hostel D" image="/img/hd.jpg" description="Girl's Hostel" accommodation="Two people in a room" link="/available-room?hostel=HostelD" />
+          <RoomCard hostel="Hostel F" image="/img/hf.jpg" description="Girl's Hostel" accommodation="Three people per room" link="/available-room?hostel=Hostel F" />
+          <RoomCard hostel="Hostel C" image="/img/hc.jpg" description="Girl's Hostel" accommodation="Two people in a room" link="/available-room?hostel=Hostel C" />
+          <RoomCard hostel="Hostel D" image="/img/hd.jpg" description="Girl's Hostel" accommodation="Two people in a room" link="/available-room?hostel=Hostel D" />
         </div>
 
         {/* Dynamically Fetched New Hostels */}
