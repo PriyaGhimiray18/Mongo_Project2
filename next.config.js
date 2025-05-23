@@ -7,6 +7,8 @@ const nextConfig = {
     config.resolve.fallback = { fs: false, path: false };
     return config;
   },
+  // Disable font optimization temporarily
+  optimizeFonts: false,
 }
 
 module.exports = nextConfig 

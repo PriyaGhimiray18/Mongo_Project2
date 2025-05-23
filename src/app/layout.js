@@ -1,12 +1,9 @@
 // layout.js
-import { Inter } from 'next/font/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import NavbarWrapper from '@/app/component/NavbarWrapper';
 import BootstrapClient from '@/component/BootstrapClient';
 import SessionWrapper from './SessionWrapper';
-
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata = {
   title: 'CST Hostel Booking System',
@@ -25,7 +22,7 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className={inter.className}>
+      <body>
         <BootstrapClient />
         <NavbarWrapper />
         <SessionWrapper>{children}</SessionWrapper>

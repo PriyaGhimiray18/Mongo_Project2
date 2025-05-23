@@ -28,7 +28,6 @@
     "csv-parser": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.510.0",
-    "next": "^13.4.19",
     "next-auth": "^4.24.11",
     "pg": "^8.11.3",
     "react": "^18.2.0",
@@ -43,11 +42,12 @@
     "css-loader": "^7.1.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.1.0",
+    "next": "^13.4.19",
     "postcss": "^8.4.31",
     "postcss-import": "^15.1.0",
     "prisma": "^5.22.0",
     "style-loader": "^4.0.0",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^3.3.5",
     "typescript": "^5.3.3"
   }
 }
