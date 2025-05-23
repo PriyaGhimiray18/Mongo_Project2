@@ -1,10 +1,8 @@
 // layout.js
-import { StackProvider, StackTheme } from "@stackframe/stack";
-import { stackServerApp } from "../stack";
 import { Inter } from 'next/font/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
-import NavbarWrapper from '@/app/component/NavbarWrapper'; // ✅ New wrapper
+import NavbarWrapper from '@/app/component/NavbarWrapper';
 import BootstrapClient from '@/component/BootstrapClient';
 import SessionWrapper from './SessionWrapper';
 
@@ -19,7 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
           rel="stylesheet"
@@ -27,11 +25,11 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className={inter.className}><StackProvider app={stackServerApp}><StackTheme>
+      <body className={inter.className}>
         <BootstrapClient />
-        <NavbarWrapper /> {/* ✅ Conditional rendering is handled here */}
+        <NavbarWrapper />
         <SessionWrapper>{children}</SessionWrapper>
-      </StackTheme></StackProvider></body>
+      </body>
     </html>
   );
 }
