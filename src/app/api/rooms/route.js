@@ -5,6 +5,8 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const hostel = searchParams.get('hostel');
 
+    console.log('Received hostel parameter:', hostel);
+
     if (!hostel) {
       return new Response(
         JSON.stringify({ error: 'Hostel parameter is required' }),
@@ -13,11 +15,15 @@ export async function GET(request) {
     }
 
     const cleanHostelName = hostel.trim();
+    console.log('Cleaned hostel name:', cleanHostelName);
 
+    // First try: Exact match
     let hostelData = await prisma.hostel.findFirst({
       where: { name: cleanHostelName }
     });
+    console.log('First try (exact match) result:', hostelData?.name);
 
+    // Second try: Case-insensitive match
     if (!hostelData) {
       hostelData = await prisma.hostel.findFirst({
         where: {
@@ -27,20 +33,26 @@ export async function GET(request) {
           }
         }
       });
+      console.log('Second try (case-insensitive) result:', hostelData?.name);
     }
 
+    // Third try: Partial match
     if (!hostelData) {
+      const searchTerm = cleanHostelName.replace('Hostel', '').trim();
+      console.log('Third try search term:', searchTerm);
       hostelData = await prisma.hostel.findFirst({
         where: {
           name: {
-            contains: cleanHostelName.replace('Hostel', '').trim(),
+            contains: searchTerm,
             mode: 'insensitive'
           }
         }
       });
+      console.log('Third try (partial match) result:', hostelData?.name);
     }
 
     if (!hostelData) {
+      console.log('No hostel found after all attempts');
       return new Response(
         JSON.stringify({ error: 'Hostel not found' }),
         { status: 404, headers: { 'Content-Type': 'application/json' } }
@@ -59,16 +71,16 @@ export async function GET(request) {
         roomNumber: true,
         floor: true,
         capacity: true,
-        status: true, // original DB status, may still be used for maintenance
+        status: true,
         occupants: true
       }
     });
 
+    console.log('Found rooms:', rooms.length);
+
     const transformedRooms = rooms.map((room) => {
-      // Compute actual status based on occupants vs. capacity
       let computedStatus;
 
-      // Prioritize manual override status if set to MAINTENANCE
       if (room.status === 'MAINTENANCE') {
         computedStatus = 'MAINTENANCE';
       } else if (room.occupants === 0) {
