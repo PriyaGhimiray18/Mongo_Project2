@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "node prisma/seed.mjs",
-    "migrate": "cross-env DATABASE_URL=postgresql://postgres:admin@localhost:5432/Hostel_booking?schema=public prisma migrate dev"
+    "migrate": "cross-env DATABASE_URL=postgresql://postgres:admin@localhost:5432/Hostel_booking?schema=public prisma migrate dev",
+    "seed-neon": "cross-env DATABASE_URL=postgresql://hostel_booking_owner:npg_l3dnTCczDxN5@ep-autumn-math-a58014d1-pooler.us-east-2.aws.neon.tech/hostel_booking?sslmode=require node prisma/seed-neon.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
