@@ -2,7 +2,13 @@
 const nextConfig = {
   experimental: {
     appDir: true,
-  }
-};
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, path: false };
+    return config;
+  },
+  // Disable font optimization temporarily
+  optimizeFonts: false,
+}
 
-export default nextConfig;
+export default nextConfig
