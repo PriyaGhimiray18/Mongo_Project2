@@ -46,7 +46,7 @@ model Room {
 
   bookings Booking[] // back relation
 
-  @@unique([roomNumber, hostelId], name: "room_number_hostelId")
+ @@unique([roomNumber, hostelId], name: "room_number_hostelId")
 }
 
 model Booking {

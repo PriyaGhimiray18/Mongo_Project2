@@ -2,6 +2,7 @@
   "name": "hostel_booking_system",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
@@ -10,17 +11,20 @@
     "lint": "next lint",
     "seed": "node prisma/seed.mjs",
     "migrate": "cross-env DATABASE_URL=postgresql://postgres:admin@localhost:5432/Hostel_booking?schema=public prisma migrate dev",
-    "seed-neon": "cross-env DATABASE_URL=postgresql://hostel_booking_owner:npg_l3dnTCczDxN5@ep-autumn-math-a58014d1-pooler.us-east-2.aws.neon.tech/hostel_booking?sslmode=require node prisma/seed-neon.js"
+    "seed-neon": "cross-env DATABASE_URL=postgresql://hostel_booking_owner:npg_l3dnTCczDxN5@ep-autumn-math-a58014d1-pooler.us-east-2.aws.neon.tech/hostel_booking?sslmode=require node prisma/seed.mjs",
+    "seed-hostels": "cross-env DATABASE_URL=postgresql://hostel_booking_owner:npg_l3dnTCczDxN5@ep-autumn-math-a58014d1-pooler.us-east-2.aws.neon.tech/hostel_booking?sslmode=require node prisma/seed-hostels.js"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.mjs"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
     "@neondatabase/serverless": "^1.0.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.22.0",
+    "@tailwindcss/forms": "^0.5.10",
     "@types/jsonwebtoken": "^9.0.9",
+    "autoprefixer": "^10.4.17",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.6",
@@ -30,23 +34,21 @@
     "lucide-react": "^0.510.0",
     "next-auth": "^4.24.11",
     "pg": "^8.11.3",
+    "postcss": "^8.4.35",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.10",
     "@types/node": "^20.11.24",
     "@types/pg": "^8.15.2",
-    "autoprefixer": "^10.4.17",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.1.0",
     "next": "^13.4.19",
-    "postcss": "^8.4.35",
     "prisma": "^5.22.0",
     "style-loader": "^4.0.0",
-    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   }
 }
