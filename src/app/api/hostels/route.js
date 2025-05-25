@@ -164,3 +164,49 @@ export async function PUT(request) {
     );
   }
 }
+
+// POST - Create a new hostel
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { name, type, description, accommodation } = body;
+
+    // Validate required fields
+    if (!name || !type || !description || !accommodation) {
+      return Response.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Check if hostel with same name already exists
+    const existingHostel = await prisma.hostel.findUnique({
+      where: { name }
+    });
+
+    if (existingHostel) {
+      return Response.json(
+        { error: 'A hostel with this name already exists' },
+        { status: 400 }
+      );
+    }
+
+    // Create the new hostel
+    const hostel = await prisma.hostel.create({
+      data: {
+        name,
+        type,
+        description,
+        accommodation
+      }
+    });
+
+    return Response.json(hostel, { status: 201 });
+  } catch (error) {
+    console.error('Error creating hostel:', error);
+    return Response.json(
+      { error: 'Failed to create hostel' },
+      { status: 500 }
+    );
+  }
+}
