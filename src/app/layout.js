@@ -1,5 +1,4 @@
 // layout.js
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import NavbarWrapper from '@/app/component/NavbarWrapper';
 import BootstrapClient from '@/component/BootstrapClient';
