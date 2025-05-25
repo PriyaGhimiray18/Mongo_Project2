@@ -230,3 +230,29 @@ export async function POST(request) {
     );
   }
 }
+// DELETE - Delete hostel by ID (including its rooms)
+export async function DELETE(request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  try {
+    if (!id) {
+      return Response.json({ error: 'Missing hostel ID' }, { status: 400 });
+    }
+
+    // Delete all related rooms first
+    await prisma.room.deleteMany({
+      where: { hostelId: Number(id) },
+    });
+
+    // Then delete the hostel
+    await prisma.hostel.delete({
+      where: { id: Number(id) },
+    });
+
+    return Response.json({ message: 'Hostel deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('❌ DELETE /api/hostels error:', error);
+    return Response.json({ error: 'Failed to delete hostel' }, { status: 500 });
+  }
+}
