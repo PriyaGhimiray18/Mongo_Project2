@@ -21,6 +21,10 @@ export default function RootLayout({ children }) {
           integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
           crossOrigin="anonymous"
         />
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet"
+        />
       </head>
       <body>
         <BootstrapClient />
