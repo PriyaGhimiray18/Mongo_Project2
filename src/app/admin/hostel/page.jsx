@@ -31,19 +31,31 @@ export default function HostelAdminPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('📤 Submitting form data:', formData);
     const method = isEditing ? 'PUT' : 'POST';
     const endpoint = isEditing ? `/api/hostels?id=${editId}` : '/api/hostels';
 
-    await fetch(endpoint, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('❌ Server error:', errorData);
+        throw new Error(errorData.error || 'Failed to create hostel');
+      }
 
-    setFormData({ name: '', type: '', description: '', accommodation: '' });
-    setIsEditing(false);
-    setEditId(null);
-    fetchHostels();
+      setFormData({ name: '', type: '', description: '', accommodation: '' });
+      setIsEditing(false);
+      setEditId(null);
+      fetchHostels();
+    } catch (error) {
+      console.error('❌ Error submitting form:', error);
+      alert(error.message);
+    }
   };
 
   const handleEdit = (hostel) => {

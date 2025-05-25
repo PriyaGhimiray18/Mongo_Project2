@@ -169,10 +169,17 @@ export async function PUT(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
+    console.log('📝 Received POST request body:', body);
     const { name, type, description, accommodation } = body;
 
     // Validate required fields
     if (!name || !type || !description || !accommodation) {
+      console.log('❌ Missing fields:', {
+        name: !name,
+        type: !type,
+        description: !description,
+        accommodation: !accommodation
+      });
       return Response.json(
         { error: 'Missing required fields' },
         { status: 400 }
