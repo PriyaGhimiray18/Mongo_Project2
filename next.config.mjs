@@ -9,6 +9,8 @@ const nextConfig = {
   },
   // Disable font optimization temporarily
   optimizeFonts: false,
+  // Add transpilePackages if needed
+  transpilePackages: ['@prisma/client'],
 }
 
 export default nextConfig

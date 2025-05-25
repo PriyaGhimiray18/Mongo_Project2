@@ -24,7 +24,6 @@ async function createRoomsForHostel(hostel, floorRooms, numFloors, capacity) {
             capacity: capacity,
             status: 'AVAILABLE',
             occupants: 0,
-            description: `Room ${roomNumber} on floor ${floor + 1}`
           },
           create: {
             room_number: roomNumber,
@@ -32,7 +31,6 @@ async function createRoomsForHostel(hostel, floorRooms, numFloors, capacity) {
             capacity: capacity,
             status: 'AVAILABLE',
             occupants: 0,
-            description: `Room ${roomNumber} on floor ${floor + 1}`,
             hostelId: hostel.id
           }
         });
