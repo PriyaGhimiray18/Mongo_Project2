@@ -232,15 +232,18 @@ export async function POST(request) {
 }
 // DELETE - Delete hostel by ID (including its rooms)
 export async function DELETE(request) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
-
   try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
     if (!id) {
-      return Response.json({ error: 'Missing hostel ID' }, { status: 400 });
+      return new Response(JSON.stringify({ error: 'Missing hostel ID' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
-    // Delete all related rooms first
+    // Delete all rooms related to this hostel first (due to FK constraints)
     await prisma.room.deleteMany({
       where: { hostelId: Number(id) },
     });
@@ -250,9 +253,12 @@ export async function DELETE(request) {
       where: { id: Number(id) },
     });
 
-    return Response.json({ message: 'Hostel deleted successfully' }, { status: 200 });
+    return new Response(null, { status: 204 });
   } catch (error) {
-    console.error('❌ DELETE /api/hostels error:', error);
-    return Response.json({ error: 'Failed to delete hostel' }, { status: 500 });
+    console.error('Error deleting hostel:', error);
+    return new Response(JSON.stringify({ error: 'Failed to delete hostel' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
