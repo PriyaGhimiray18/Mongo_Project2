@@ -230,11 +230,13 @@ export async function POST(request) {
     );
   }
 }
+
 // DELETE - Delete hostel by ID (including its rooms)
 export async function DELETE(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    console.log('DELETE request received for hostel id:', id);
 
     if (!id) {
       return new Response(JSON.stringify({ error: 'Missing hostel ID' }), {
@@ -243,15 +245,25 @@ export async function DELETE(request) {
       });
     }
 
+    const hostelId = Number(id);
+    if (isNaN(hostelId)) {
+      return new Response(JSON.stringify({ error: 'Invalid hostel ID' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Delete all rooms related to this hostel first (due to FK constraints)
-    await prisma.room.deleteMany({
-      where: { hostelId: Number(id) },
+    const deletedRooms = await prisma.room.deleteMany({
+      where: { hostelId },
     });
+    console.log(`Deleted ${deletedRooms.count} rooms for hostel ${hostelId}`);
 
     // Then delete the hostel
     await prisma.hostel.delete({
-      where: { id: Number(id) },
+      where: { id: hostelId },
     });
+    console.log(`Deleted hostel with id ${hostelId}`);
 
     return new Response(null, { status: 204 });
   } catch (error) {
