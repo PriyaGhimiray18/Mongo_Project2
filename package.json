@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "next lint",
@@ -48,6 +48,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "13.4.19",
     "postcss": "^8.5.3",
+    "postcss-import": "^16.1.0",
     "postcss-nesting": "^13.0.1",
     "prisma": "^5.22.0",
     "style-loader": "^4.0.0",
