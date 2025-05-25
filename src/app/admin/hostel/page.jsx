@@ -15,9 +15,11 @@ export default function HostelAdminPage() {
     try {
       const res = await fetch('/api/hostels');
       const data = await res.json();
-      setHostels(data.hostels); // <-- Fix here! Access the hostels array inside the response
+      // The API returns an array directly, not wrapped in a hostels property
+      setHostels(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch hostels:', error);
+      setHostels([]);
     }
   };
 

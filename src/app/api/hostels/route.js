@@ -5,6 +5,19 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const hostel = searchParams.get('hostel');
 
+    // If no specific hostel is requested, return all hostels
+    if (!hostel) {
+      const allHostels = await prisma.hostel.findMany({
+        include: {
+          rooms: true
+        }
+      });
+      return new Response(JSON.stringify(allHostels), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     console.log('🔍 Received hostel param:', hostel);
 
     if (!hostel) {
