@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Footer from '@/app/component/footer';
-import '@/styles/style.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function HostelAdminPage() {
   const [hostels, setHostels] = useState([]);

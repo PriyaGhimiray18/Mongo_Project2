@@ -1,34 +1,39 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt'; // ✨ make sure to install this via `npm install bcrypt`
+import bcrypt from 'bcrypt';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 const prisma = new PrismaClient();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Helper to create rooms for a hostel
-async function createRoomsForHostel(hostel, floorRooms, numFloors, capacity) {
+async function createRoomsForHostel(hostel, floorData) {
   console.log(`Creating rooms for ${hostel.name}...`);
   let totalRooms = 0;
 
-  for (let floor = 0; floor < numFloors; floor++) {
-    const numRooms = floorRooms[floor];
-    for (let room = 1; room <= numRooms; room++) {
-      const roomNumber = (floor + 1) * 100 + room;
+  for (const floor of floorData) {
+    for (let roomNumber = floor.roomStart; roomNumber <= floor.roomEnd; roomNumber++) {
       try {
         await prisma.room.upsert({
           where: {
             room_number_hostelId: {
-              room_number: roomNumber,
+              roomNumber: roomNumber,
               hostelId: hostel.id
             }
           },
           update: {
-            floor: floor + 1,
-            capacity: capacity,
+            floor: floor.floor,
+            capacity: floor.capacity,
             status: 'AVAILABLE',
             occupants: 0,
           },
           create: {
-            room_number: roomNumber,
-            floor: floor + 1,
-            capacity: capacity,
+            roomNumber: roomNumber,
+            floor: floor.floor,
+            capacity: floor.capacity,
             status: 'AVAILABLE',
             occupants: 0,
             hostelId: hostel.id
@@ -47,73 +52,37 @@ async function createRoomsForHostel(hostel, floorRooms, numFloors, capacity) {
 async function main() {
   console.log('Starting database seeding...');
 
-  // Hostels data
-  const hostels = [
-    { name: 'Hostel E', type: 'girls', description: 'Girls hostel with modern amenities', accommodation: '2 floors' },
-    { name: 'Hostel A', type: 'boys', description: 'Boys hostel with modern amenities', accommodation: '3 floors' },
-    { name: 'Hostel B', type: 'boys', description: 'Boys hostel with modern amenities', accommodation: '3 floors' },
-    { name: 'RKA', type: 'girls', description: 'Girls hostel with 4 people per room', accommodation: '4 floors' },
-    { name: 'RKB', type: 'girls', description: 'Girls hostel with 4 people per room', accommodation: '4 floors' },
-    { name: 'NK', type: 'girls', description: 'Girls hostel with 2 people per room', accommodation: '4 floors' },
-    { name: 'Lhawang', type: 'boys', description: 'Boys hostel with 2 people per room', accommodation: '3 floors' },
-  ];
+  // Read the JSON file
+  const jsonData = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../data/hostels.json'), 'utf-8')
+  );
 
   console.log('Creating hostels...');
   
-  for (const hostelData of hostels) {
+  for (const hostelData of jsonData.hostels) {
     console.log(`Processing hostel: ${hostelData.name}`);
 
     try {
       // Upsert hostel record (create or update)
       const hostel = await prisma.hostel.upsert({
         where: { name: hostelData.name },
-        update: hostelData,
-        create: hostelData,
+        update: {
+          type: hostelData.type,
+          description: hostelData.description,
+          accommodation: hostelData.accommodation,
+        },
+        create: {
+          name: hostelData.name,
+          type: hostelData.type,
+          description: hostelData.description,
+          accommodation: hostelData.accommodation,
+        },
       });
 
       console.log(`Created/Updated hostel: ${hostel.name} with ID: ${hostel.id}`);
 
-      // Decide rooms per floor, floors count and capacity
-      let floorRooms;
-      let numFloors;
-      let capacity;
-
-      switch (hostel.name) {
-        case 'Hostel E':
-          floorRooms = [12, 20]; 
-          numFloors = 2;
-          capacity = 2;
-          break;
-        case 'Hostel A':
-        case 'Hostel B':
-          floorRooms = [13, 14, 14]; 
-          numFloors = 3;
-          capacity = 2;
-          break;
-        case 'RKA':
-        case 'RKB':
-          floorRooms = [12, 12, 12, 12]; 
-          numFloors = 4;
-          capacity = 4;
-          break;
-        case 'NK':
-          floorRooms = [8, 9, 9, 8]; 
-          numFloors = 4;
-          capacity = 2;
-          break;
-        case 'Lhawang':
-          floorRooms = [7, 7, 7]; 
-          numFloors = 3;
-          capacity = 2;
-          break;
-        default:
-          floorRooms = [13, 14, 14]; 
-          numFloors = 3;
-          capacity = 2;
-      }
-
       // Create rooms for the current hostel
-      await createRoomsForHostel(hostel, floorRooms, numFloors, capacity);
+      await createRoomsForHostel(hostel, hostelData.rooms);
 
     } catch (hostelError) {
       console.error(`Error processing hostel ${hostelData.name}:`, hostelError);

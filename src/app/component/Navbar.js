@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import '@/styles/style.css';  // Your custom CSS file with media queries and styles
 
 export default function Navbar() {
   const [isMounted, setIsMounted] = useState(false);

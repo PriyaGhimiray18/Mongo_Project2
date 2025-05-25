@@ -1,12 +1,12 @@
 // layout.js
+import BootstrapClient from '@/component/BootstrapClient';
 import './globals.css';
 import NavbarWrapper from '@/app/component/NavbarWrapper';
-import BootstrapClient from '@/component/BootstrapClient';
 import SessionWrapper from './SessionWrapper';
 
 export const metadata = {
-  title: 'CST Hostel Booking System',
-  description: 'Book your hostel room at CST',
+  title: 'Hostel Booking System',
+  description: 'A modern hostel booking system',
 };
 
 export default function RootLayout({ children }) {

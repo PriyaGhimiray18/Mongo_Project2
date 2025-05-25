@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import '@/styles/style.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
