@@ -29,7 +29,8 @@ export default function Home() {
         const res = await fetch('/api/hostels');
         const data = await res.json();
 
-        if (!res.ok || !data || !Array.isArray(data.hostels)) {
+        // Change here: expect 'data' to be an array directly
+        if (!res.ok || !data || !Array.isArray(data)) {
           console.error('Invalid response from /api/hostels:', data);
           setError('Invalid data from server');
           return;
@@ -40,7 +41,7 @@ export default function Home() {
 
         const normalizedHardcoded = hardcodedHostelNames.map(normalize);
 
-        const filtered = data.hostels.filter((h) => {
+        const filtered = data.filter((h) => {
           const normalizedDbName = normalize(h.name);
           return !normalizedHardcoded.includes(normalizedDbName);
         });
